@@ -9,7 +9,15 @@ format:
     code-fold: true
 ---
 
-This my blog. Please help me.
+Aaron Judge is having a career defined by power and offensive consistency. He has earned three Most Valuable Player Awards from Major League Baseball due to his ability to hit north of 50 home runs seemingly every season while also hitting for a high average. This type of hitter is rare. Since 1990, which is seen in my eyes as the beginning of the velocity era, only a handful of players have shown this kind of ability. 
+
+Anyone who is a less than casual baseball fan knows who Judge is. He has frequented advertisements on national tv, he has been on the cover of two video games and is one of the more largest figures in the sports world both literally and figuratively. The 6-foot-8, 282-pound outfielder is a home run robbing, long ball hitting, and sweet swinging right-handed hitter who looks like he can be labeled as one of the best players of all time. 
+
+But is he actually the best?
+
+To find out the answer to this commonly debated question, we turn to some data from Sports Reference. OPS+ is a statistic that paints a clear picture. It is an advanced statistic that looks at the hitters total offensive production, adjusts it for league-wide averages and factors in what ballpark certain hitters are playing. So yes, Yankee stadium being a “little league field” is factored in. 
+
+Is Aaron Judge the best hitter since 1990? Let’s begin by looking at Judge’s best three OPS+ seasons averaged against some post-1990 all-time greats.
 
 ```{r message=FALSE, warning=FALSE}
 library(tidyverse)
@@ -90,6 +98,10 @@ ggplot() +
     ) 
 ```
 
+The thing that jumps out immediately is that Barry Bonds is head and shoulders above the rest of the players – a trend you’ll see throughout. However, the Yankee captain finds himself in second place. This proves that even playing 81 games a year in his smaller Yankees’ ballpark, he is still dominant on the average MLB field. It is surprising to see guys like Mike Trout, Sammy Sosa and Albert Pujols sit below the 200 line. Mark McGuire makes an interesting case but still sits plenty below The Captain. 
+
+While OPS+ is often looked at to define great hitters, WAR is the defining stat for a consistently dominant player. WAR, which stands for Wins Above Replacement, is an all-encomposing stat that estimates a player’s total contribution to their team compared to a replacement level player.
+
 ```{r message=FALSE, warning=FALSE}
 judge_peak <- modern |> filter(Player == "Aaron Judge") |> top_n(3, wt=WAR) |> 
   summarize(
@@ -168,6 +180,10 @@ peaks <- bind_rows(judge_peak, bonds_peak, pujols_peak, mcgwire_peak, sosa_peak,
     ) 
 ```
 
+When looking at the average WAR of each player's best three seasons, you see that the order doesn’t change significantly. What does change is that Judge actually compares better to Bonds while Mark McGwire plummeted to the bottom and out of the conversation. 
+
+However, these numbers come with a ginormous, colossal and undeniable asterisk next to them. The era that produced historic seasons from Bonds, McGwire and Sosa are not defined by greatness, but by steroids. To find the true value of Aaron Judge, who as far as we know has played clean his whole career, let’s see what happens when he is against a level playing field.
+
 ```{r message=FALSE, warning=FALSE}
 adjusted_peaks <- modern |> 
   filter(Player %in% modern_greats) |> 
@@ -199,7 +215,7 @@ ggplot() +
   labs(
     x = "",
     y = "Adjusted Peak WAR Average",
-    title = "Look at the best three WAR seasons minus steriods",
+    title = "Look at the best three steroidless-WAR seasons",
     subtitle = "With steroid-influenced peaks replaced by career baselines, Judge's actual dominance is undeniable.",
     caption = "Source: Baseball Reference | By Sam Ojeda"
   ) +
@@ -212,6 +228,10 @@ ggplot() +
     plot.title.position = "plot"
   )
 ```
+
+By replacing the peak steroid years of those legends with their career averages, we even the playing field. By neutralizing the inflation of the stats in the late 90s and earlier 2000s, we see a stark change in the hierarchy. 
+
+Judge appears as the gold standard of the modern game. While the legends of the past saw numbers fall once reality hit, Judge and Trout stayed steady. Finally, we combine the two. How do OPS+ and WAR combine to show who really is the best. 
 
 ```{r message=FALSE, warning=FALSE}
   unfiltered_data <- modern |> 
@@ -260,7 +280,7 @@ ggplot() +
   theme(
     plot.title = element_text(size = 20, face = "bold"),
     axis.title = element_text(size = 8), 
-    plot.subtitle = element_text(size = 10), 
+    plot.subtitle = element_text(size = 9), 
     panel.grid.major.y = element_blank(),
     panel.grid.minor = element_blank(),
     plot.title.position = "plot"
@@ -335,3 +355,7 @@ ggplot() +
     plot.title.position = "plot"
   )
 ```
+
+When we see the adjusted WARs and OPS+s next to each other we see Judge at the top once again. While Bonds still put up a career worthy of the Hall of Fame, the data is clear – Judge and Trout have been a shining light following a world of darkness. 
+
+Judge is doing this in an era of 100 mph fastballs and elite specialization up-and-down pitching rotations. When you strip away an era defined by cheating, Judge is not just one of the greats, he is the greatest we have ever seen. 
