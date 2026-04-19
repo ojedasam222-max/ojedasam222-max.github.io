@@ -1,0 +1,144 @@
+```{r}
+library(tidyverse)
+library(ggbeeswarm)
+library(gt)
+library(ggrepel)
+
+stats <- read_csv("baseballhitters19142025 (1).csv")
+
+club_300 <- stats |>  
+  filter(PA >= 400) |>  
+  mutate(hit_300 = ifelse(BA >= .300, 1, 0)) |>  
+  group_by(Season) |>  
+  summarise(
+    total_300_hitters = sum(hit_300)
+  )
+bar_labels <- club_300 |> 
+  filter(Season %in% c(1925, 1950, 1975, 2000, 2025))
+
+ggplot() +  
+  geom_col(
+    data = club_300,  
+    aes(x = Season, y = total_300_hitters),  
+    fill = "red"
+  ) + 
+  geom_text(
+    data = bar_labels, 
+    aes(x = Season, y = total_300_hitters, label = total_300_hitters), 
+    vjust = -0.5, 
+    size = 3.5, 
+    fontface = "bold"
+  ) +
+  labs(
+    x = "Season",  
+    y = "Number of .300 Hitters",
+    title = "The .300 hitter is disappearing",  
+    subtitle = "The number of qualified hitters reaching the .300 mark has plummeted to historic lows since the late 90s.",  
+    caption = "Source: Baseball Reference | By Sam Ojeda"
+  ) +  
+  theme_minimal() +  
+  theme(
+    plot.title = element_text(size = 20, face = "bold"),
+    axis.title = element_text(size = 8),  
+    plot.subtitle = element_text(size = 10),  
+    panel.grid.minor = element_blank(),
+    plot.title.position = "plot"
+  )
+```
+
+```{r}
+modern_era <- stats |> 
+  filter(Season == 2025, PA >= 400)
+
+outlier <- modern_era |> 
+  top_n(1, wt = BA)
+
+ggplot() + 
+  geom_point(data = modern_era, aes(x = BA, y = OBP), alpha = 0.5) + 
+  geom_smooth(data = modern_era, aes(x = BA, y = OBP), method = "lm") +
+  geom_hline(yintercept = .320, color = "red") +
+  geom_text_repel(data = outlier, aes(x = BA, y = OBP, label = Player), size = 4, fontface = "bold") +
+  labs(
+    x = "Batting Average", 
+    y = "On-Base Percentage",
+    title = "Does anyone hit for average anymore?", 
+    subtitle = "In 2025, many players maintain a 'respectable' OBP despite hitting well below the old standard of .250.", 
+    caption = "Source: Baseball Reference | By Sam Ojeda"
+  ) + 
+  theme_minimal() + 
+  theme(
+    plot.title = element_text(size = 20, face = "bold"),
+    axis.title = element_text(size = 8), 
+    plot.subtitle = element_text(size = 10), 
+    panel.grid.minor = element_blank(),
+    plot.title.position = "plot"
+  )
+```
+
+```{r}
+era_comparison <- stats |> 
+  filter(PA >= 400) |> 
+  filter(Season %in% c(1924, 2025))
+
+ggplot() + 
+  geom_beeswarm(
+    data = era_comparison, 
+    aes(x = as.character(Season), y = BA, color = as.character(Season))
+  ) + 
+  scale_color_manual(
+    values = c("1924" = "blue", "2025" = "red")
+  ) +
+  labs(
+    x = "Year", 
+    y = "Batting Average",
+    title = "There has been a great collapse of contact", 
+    subtitle = "Comparing the distribution of Batting Averages shows the entire league has shifted downward over a century.", 
+    caption = "Source: Baseball Reference | By Sam Ojeda"
+  ) + 
+  theme_minimal() + 
+  theme(
+    plot.title = element_text(size = 20, face = "bold"),
+    axis.title = element_text(size = 8), 
+    plot.subtitle = element_text(size = 10), 
+    panel.grid.minor = element_blank(),
+    plot.title.position = "plot",
+    legend.position = "none"
+  )
+```
+
+```{r}
+survivors_2025 <- stats |> 
+  filter(Season == 2025, PA >= 400, BA >= .300) |> 
+  select(Player, Team, BA, OBP, HR) |> 
+  arrange(desc(BA))
+
+survivors_2025 |> 
+  gt() |> 
+  cols_label(
+    BA = "Batting Average",
+    OBP = "On-Base Percentage",
+    HR = "Home Runs"
+  ) |> 
+  tab_header(
+    title = "The last of a dying breed",
+    subtitle = "Only a few qualified hitters managed to maintain the old .300 standard in the 2025 season."
+  ) |> 
+  tab_style(
+    style = cell_text(color = "black", weight = "bold", align = "left"),
+    locations = cells_title("title")
+  ) |> 
+  tab_style(
+    style = cell_text(color = "black", align = "left"),
+    locations = cells_title("subtitle")
+  ) |> 
+  tab_source_note(
+    source_note = md("By: Sam Ojeda  | Source: Baseball Reference")
+  ) |> 
+  tab_style(
+    locations = cells_column_labels(columns = everything()),
+    style = list(
+      cell_borders(sides = "bottom", weight = px(3)),
+      cell_text(weight = "bold", size = 12)
+    )
+  )
+```
