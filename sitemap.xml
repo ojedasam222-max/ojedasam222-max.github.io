@@ -24,4 +24,16 @@
     <loc>https://your-website-url.example.com/index.html</loc>
     <lastmod>2026-03-30T18:49:43.668Z</lastmod>
   </url>
+  <url>
+    <loc>https://your-website-url.example.com/posts/The-.300-hitter-is-going-extinct/index.html</loc>
+    <lastmod>2026-04-19T18:12:26.176Z</lastmod>
+  </url>
+  <url>
+    <loc>https://your-website-url.example.com/posts/The-.300-hitter-is-going-extinct/Project 2.html</loc>
+    <lastmod>2026-04-19T18:08:24.801Z</lastmod>
+  </url>
+  <url>
+    <loc>https://your-website-url.example.com/Project 2.html</loc>
+    <lastmod>2026-04-19T17:45:56.278Z</lastmod>
+  </url>
 </urlset>
